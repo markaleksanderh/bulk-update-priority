@@ -39,6 +39,6 @@ def update_issue(issue_id, priority):
 #     for row in csv_reader:
 #         get_issue(row[0])
 
-update_issue('EL-1409', 'High')
+update_issue('EL-1409', 'Low')
 
 # get_issue('EL-1409')
