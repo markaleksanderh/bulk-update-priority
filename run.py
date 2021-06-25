@@ -1,24 +1,30 @@
+import requests
+from requests.auth import HTTPBasicAuth
+import json
 
+from dotenv import dotenv_values
 
-# This code sample uses the 'requests' library:
-# http://docs.python-requests.org
-# import requests
-# from requests.auth import HTTPBasicAuth
-# import json
+config = dotenv_values(".env")
 
-# url = "https://your-domain.atlassian.net/rest/api/3/issue/{issueIdOrKey}"
+api_token = config['API_TOKEN']
+email = config['EMAIL']
+domain = config['COMPANY_DOMAIN']
 
-# auth = HTTPBasicAuth("mark@dencreative.com", "<api_token>")
+issue_id = 'EL-1409'
 
-# headers = {
-#    "Accept": "application/json"
-# }
+url = "https://dencreative.atlassian.net/rest/api/3/issue/" + issue_id
 
-# response = requests.request(
-#    "GET",
-#    url,
-#    headers=headers,
-#    auth=auth
-# )
+auth = HTTPBasicAuth(email, api_token)
 
-# print(json.dumps(json.loads(response.text), sort_keys=True, indent=4, separators=(",", ": ")))
+headers = {
+   "Accept": "application/json"
+}
+
+response = requests.request(
+   "GET",
+   url,
+   headers=headers,
+   auth=auth
+)
+
+print(json.dumps(json.loads(response.text), sort_keys=True, indent=4, separators=(",", ": ")))
