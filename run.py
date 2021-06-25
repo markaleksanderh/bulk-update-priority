@@ -10,21 +10,15 @@ api_token = config['API_TOKEN']
 email = config['EMAIL']
 domain = config['COMPANY_DOMAIN']
 
-issue_id = 'EL-1409'
-
-url = "https://dencreative.atlassian.net/rest/api/3/issue/" + issue_id
-
+base_url = "https://" + domain + ".net/rest/api/3/issue/"
 auth = HTTPBasicAuth(email, api_token)
-
 headers = {
    "Accept": "application/json"
 }
 
-response = requests.request(
-   "GET",
-   url,
-   headers=headers,
-   auth=auth
-)
+def get_issue(issue_id):
+    url = base_url + issue_id
+    response = requests.request("GET", url, headers=headers, auth=auth)
+    print(json.dumps(json.loads(response.text), sort_keys=True, indent=4, separators=(",", ": ")))
 
-print(json.dumps(json.loads(response.text), sort_keys=True, indent=4, separators=(",", ": ")))
+get_issue('EL-1409')
