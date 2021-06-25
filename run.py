@@ -13,16 +13,32 @@ domain = config['COMPANY_DOMAIN']
 
 base_url = "https://" + domain + ".net/rest/api/3/issue/"
 auth = HTTPBasicAuth(email, api_token)
-headers = {"Accept": "application/json"}
+
 
 def get_issue(issue_id):
+    headers = {"Accept": "application/json"}
     url = base_url + issue_id
     response = requests.request("GET", url, headers=headers, auth=auth)
     print(json.dumps(json.loads(response.text), sort_keys=True, indent=4, separators=(",", ": ")))
 
-with open('issues.csv', newline='') as csvfile:
-    csv_reader = csv.reader(csvfile, delimiter=',', quotechar='|')
-    # Skip first row
-    next(csv_reader)
-    for row in csv_reader:
-        get_issue(row[0])
+
+
+
+
+def update_issue(issue_id, priority):
+    headers = {"Accept": "application/json","Content-Type": "application/json"}
+    url = base_url + issue_id
+    payload = json.dumps({"update":{"priority":[{"set":{"name" : priority}}]}})
+    response = requests.request("PUT", url, headers=headers, data=payload, auth=auth)
+    print(response)
+
+# with open('issues.csv', newline='') as csvfile:
+#     csv_reader = csv.reader(csvfile, delimiter=',', quotechar='|')
+#     # Skip first row
+#     next(csv_reader)
+#     for row in csv_reader:
+#         get_issue(row[0])
+
+update_issue('EL-1409', 'High')
+
+# get_issue('EL-1409')
