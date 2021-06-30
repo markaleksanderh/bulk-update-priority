@@ -21,6 +21,7 @@ def get_issue(issue_id):
     response = requests.request("GET", url, headers=headers, auth=auth)
     print(json.dumps(json.loads(response.text), sort_keys=True, indent=4, separators=(",", ": ")))
 
+
 def update_issue(issue_id, priority):
     headers = {"Accept": "application/json","Content-Type": "application/json"}
     url = base_url + issue_id
@@ -28,15 +29,15 @@ def update_issue(issue_id, priority):
     response = requests.request("PUT", url, headers=headers, data=payload, auth=auth)
     print(response)
 
-def open_file(file):
-    pass
 
-# with open('issues.csv', newline='') as csvfile:
-#     csv_reader = csv.reader(csvfile, delimiter=',', quotechar='|')
-#     # Skip first row
-#     next(csv_reader)
-#     for row in csv_reader:
-#         update_issue(row[0],row[1].strip())
+def bulk_update(file):
+    with open('issues.csv', newline='') as csvfile:
+        csv_reader = csv.reader(csvfile, delimiter=',', quotechar='|')
+        # Skip first row
+        next(csv_reader)
+        for row in csv_reader:
+            # print(row['message'])
+            update_issue(row[0],row[1])
 
-# get_issue('EL-1409')
-# update_issue('EL-1409', 'Critical')
+
+bulk_update('issues.csv')
