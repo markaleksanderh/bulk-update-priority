@@ -3,6 +3,7 @@ from requests.auth import HTTPBasicAuth
 import json
 import csv
 
+
 from dotenv import dotenv_values
 
 config = dotenv_values(".env")
@@ -14,6 +15,9 @@ domain = config['COMPANY_DOMAIN']
 base_url = "https://" + domain + ".net/rest/api/3/issue/"
 auth = HTTPBasicAuth(email, api_token)
 
+def get_file_name():
+    file_name = input("Enter file name: ")
+    return file_name
 
 def get_issue(issue_id):
     headers = {"Accept": "application/json"}
@@ -30,14 +34,22 @@ def update_issue(issue_id, priority):
     print(response)
 
 
-def bulk_update(file):
-    with open('issues.csv', newline='') as csvfile:
+def bulk_update():
+    file_name = get_file_name()
+
+    with open(file_name, newline='') as csvfile:
+        csv_reader = csv.reader(csvfile, delimiter=',', quotechar='|')
+        # Skip first row
+        next(csv_reader)
+        count = len([i for i in csv_reader])
+        print('\n{} issues found.\n\nUpdating files\n'.format(count))
+
+    with open(file_name, newline='') as csvfile:
         csv_reader = csv.reader(csvfile, delimiter=',', quotechar='|')
         # Skip first row
         next(csv_reader)
         for row in csv_reader:
-            # print(row['message'])
             update_issue(row[0],row[1])
 
 
-bulk_update('issues.csv')
+bulk_update()
