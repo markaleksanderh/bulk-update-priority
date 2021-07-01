@@ -36,22 +36,27 @@ def update_issue(issue_id, priority):
         print('\u001b[31m' + '{} failed to update. Check your CSV file is formatted correctly'.format() + '\u001b[0m')
 
 
-def bulk_update():
-    file_name = get_file_name()
-
+def get_file_length(file_name):
     with open(file_name, newline='') as csvfile:
         csv_reader = csv.reader(csvfile, delimiter=',', quotechar='|')
         # Skip first row
         next(csv_reader)
         count = len([i for i in csv_reader])
-        print('\u001b[33m' + '\n{} issues found\n\nUpdating issues...\n'.format(count) + '\u001b[0m')
+        return count
+
+
+def bulk_update():
+    file_name = get_file_name()
+
+    count = get_file_length(file_name)
+    print('\u001b[33m' + '\n{} issues found\n\nUpdating issues...\n'.format(count) + '\u001b[0m')
 
     with open(file_name, newline='') as csvfile:
         csv_reader = csv.reader(csvfile, delimiter=',', quotechar='|')
         # Skip first row
         next(csv_reader)
         for row in csv_reader:
-            update_issue(row[0],row[1])
+            update_issue(row[0].strip('"').strip(), row[1].strip('"').strip().title())
 
 
 bulk_update()
