@@ -3,7 +3,6 @@ from requests.auth import HTTPBasicAuth
 import json
 import csv
 
-
 from dotenv import dotenv_values
 
 config = dotenv_values(".env")
@@ -31,7 +30,10 @@ def update_issue(issue_id, priority):
     url = base_url + issue_id
     payload = json.dumps({"update":{"priority":[{"set":{"name" : priority}}]}})
     response = requests.request("PUT", url, headers=headers, data=payload, auth=auth)
-    print(response)
+    if response.status_code == 204:
+        print('\u001b[32m' + '{} successfully updated'.format(issue_id) + '\u001b[0m')
+    else:
+        print('\u001b[31m' + '{} failed to update. Check your CSV file is formatted correctly'.format() + '\u001b[0m')
 
 
 def bulk_update():
@@ -42,7 +44,7 @@ def bulk_update():
         # Skip first row
         next(csv_reader)
         count = len([i for i in csv_reader])
-        print('\n{} issues found.\n\nUpdating files\n'.format(count))
+        print('\u001b[33m' + '\n{} issues found\n\nUpdating issues...\n'.format(count) + '\u001b[0m')
 
     with open(file_name, newline='') as csvfile:
         csv_reader = csv.reader(csvfile, delimiter=',', quotechar='|')
